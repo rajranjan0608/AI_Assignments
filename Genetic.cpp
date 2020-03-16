@@ -133,22 +133,25 @@ vector<vector<int>> mutation(vector<vector<int>> a){
 
 int main(){
 
-    int totalStudents,no_of_subjects,totalgroups;
+    int totalStudents,totalSubjects,totalgroups;
     
-    cout << "Enter The Number Of Students : Subjects : Groups :=";
-    cin >> totalStudents >> no_of_subjects >> totalgroups;
+    cout << "Number Of Students: "; cin >> totalStudents;
+    cout << "Number Of Subjects: "; cin >> totalSubjects;
+    cout << "Number Of Groups: "; cin >> totalgroups;
+
     totalGrp=totalgroups;
     if(totalgroups>totalStudents){
-        cout << "totalgroups should be less than equal to totalStudents\n";
+        cout << "Total groups should be less than equal to total number of students\n";
         return 0;
     }
     vector<vector<int>> student_data;
-    student_data.resize(totalStudents,vector<int> (no_of_subjects));
+    student_data.resize(totalStudents,vector<int> (totalSubjects));
     
     for(int i=0;i<totalStudents;i++){
-        cout<<"Student "<<i+1<<" : ";
-        for(int j=0;j<no_of_subjects;j++){
-            cin>>student_data[i][j];
+        cout << "Student " << i+1 << ":\n";
+
+        for(int j=0; j < totalSubjects; j++){
+            cout << "Subject " << j << ": "; cin >> student_data[i][j];
         }
     }
     vector<double> averageMarks ;
@@ -160,12 +163,12 @@ int main(){
     
     
     
-    print("Initial Population:-",initial_population);
+    print("Initial Population: ",initial_population);
 
     vector<vector<int>> crossedPopulation;
     crossedPopulation=crossover(initial_population);    
     
-    print("1st Crossover Population:-",crossedPopulation);
+    print("1st Crossover Population: ",crossedPopulation);
     
     int break_while=0;
     int generation=1;
@@ -202,14 +205,14 @@ int main(){
         }
         crossedPopulation=crossover(crossedPopulation);
     }
-    cout<<"Avg_Marks:-\n";
+    cout<<"Avg_Marks: \n";
     for(int i=0;i<averageMarks.size();i++){
        
         cout<<averageMarks[i]<<" ";
     }
     cout<<endl;
-    print("Final Population:-",initial_population);
-    cout<<"Fitness Values Of Each Population in Final Population:- \n";
+    print("Final Population: ",initial_population);
+    cout<<"Fitness Values Of Each Population in Final Population: \n";
     for(int i=0;i<initial_population.size();i++){
        
         cout<<fitness(initial_population[i])<<" ";
