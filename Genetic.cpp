@@ -5,36 +5,52 @@ using namespace std;
 vector<double> averageData;
 int totalGrp;
 
-double fitness(vector<int> a){
-    
-    vector<double> averageGroupMarks;
-    averageGroupMarks.resize(totalGrp, 0);
+vector<double> averageMark(vector<vector<int>> subData) {
+    int n = subData.size(), m = subData[0].size();
 
-    vector<int> count; 
-    count.resize(totalGrp,0);
-
-    int n = a.size();
-
-    for(int i = 0; i<n; i++){
-        averageGroupMarks[a[i]] += averageData[i];
-        count[a[i]]++;
+    vector<double> averageSubjectScore;
+    for(int i = 0; i < n; i++){
+        double total = 0;
+        for(int j = 0; j < m; j++){
+            total += subData[i][j];
+        }
+        averageSubjectScore.push_back(total / m);
     }
-
-    for(int i = 0; i < totalGrp; i++){
-        averageGroupMarks[i] /= count[i];
-    }
-
-    double fitVal = 0;
-
-    for(int i=0;i<n;i++){
-        fitVal+=abs(averageGroupMarks[a[i]]-averageData[i]);
-    }
-    
-    return fitVal;
+    return averageSubjectScore;
 }
+
+double fitness(vector<int> a);
+vector<vector<int>> sortWithFit(vector<vector<int>> a);
 
 bool compare(vector<int> a, vector<int> b) {
     return fitness(a) < fitness(b);
+}
+
+vector<vector<int>> crossover(vector<vector<int>> a){
+    vector<vector<int>> crossedPopulation;
+    int n=a.size(),m=a[0].size();
+    crossedPopulation.resize(n,vector<int>(m));
+    int cpop=rand()%m;
+    for(int i=0;i<n;i+=2)
+    {
+        if(i+1<n)
+        {
+            for(int j=0;j<m;j++)
+            {
+                if(j<=cpop)
+                {
+                    crossedPopulation[i][j]=a[i][j];
+                    crossedPopulation[i+1][j]=a[i+1][j];
+                }else{
+                    crossedPopulation[i][j]=a[i+1][j];
+                    crossedPopulation[i+1][j]=a[i][j];
+                }
+            }
+        }else{
+            crossedPopulation[i]=a[i];
+        }
+    }
+    return sortWithFit(crossedPopulation);
 }
 
 vector<vector<int>> sortWithFit(vector<vector<int>> a) {
@@ -76,47 +92,6 @@ vector<vector<int>> newPopulation(int totalStudents, int totalgroups, int newPop
     return sortWithFit(init);
 }
 
-vector<double> averageMark(vector<vector<int>> subData) {
-    int n = subData.size(), m = subData[0].size();
-
-    vector<double> averageSubjectScore;
-    for(int i = 0; i < n; i++){
-        double total = 0;
-        for(int j = 0; j < m; j++){
-            total += subData[i][j];
-        }
-        averageSubjectScore.push_back(total / m);
-    }
-    return averageSubjectScore;
-}
-
-vector<vector<int>> crossover(vector<vector<int>> a){
-    vector<vector<int>> crossedPopulation;
-    int n=a.size(),m=a[0].size();
-    crossedPopulation.resize(n,vector<int>(m));
-    int cpop=rand()%m;
-    for(int i=0;i<n;i+=2)
-    {
-        if(i+1<n)
-        {
-            for(int j=0;j<m;j++)
-            {
-                if(j<=cpop)
-                {
-                    crossedPopulation[i][j]=a[i][j];
-                    crossedPopulation[i+1][j]=a[i+1][j];
-                }else{
-                    crossedPopulation[i][j]=a[i+1][j];
-                    crossedPopulation[i+1][j]=a[i][j];
-                }
-            }
-        }else{
-            crossedPopulation[i]=a[i];
-        }
-    }
-    return sortWithFit(crossedPopulation);
-}
-
 vector<vector<int>> mutation(vector<vector<int>> a){
     int population=a.size(),totalStudents=a[0].size();
     int random=rand()%population;
@@ -129,6 +104,34 @@ vector<vector<int>> mutation(vector<vector<int>> a){
         a[p_index][y]=tmp;
     }
     return sortWithFit(a);
+}
+
+double fitness(vector<int> a){
+    
+    vector<double> averageGroupMarks;
+    averageGroupMarks.resize(totalGrp, 0);
+
+    vector<int> count; 
+    count.resize(totalGrp,0);
+
+    int n = a.size();
+
+    for(int i = 0; i<n; i++){
+        averageGroupMarks[a[i]] += averageData[i];
+        count[a[i]]++;
+    }
+
+    for(int i = 0; i < totalGrp; i++){
+        averageGroupMarks[i] /= count[i];
+    }
+
+    double fitVal = 0;
+
+    for(int i=0;i<n;i++){
+        fitVal+=abs(averageGroupMarks[a[i]]-averageData[i]);
+    }
+    
+    return fitVal;
 }
 
 int main(){
